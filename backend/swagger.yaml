@@ -1,0 +1,154 @@
+openapi: 3.0.0
+info:
+  title: Secure Task Manager API
+  description: API for managing tasks with JWT authentication and RBAC
+  version: 1.0.0
+main:
+  - url: http://localhost:5000/api/v1
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+security:
+  - bearerAuth: []
+paths:
+  /auth/register:
+    post:
+      summary: Register a new user
+      tags: [Auth]
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email: { type: string }
+                password: { type: string }
+                role: { type: string, enum: [USER, ADMIN] }
+      responses:
+        201:
+          description: Registered successfully
+  /auth/login:
+    post:
+      summary: Login user
+      tags: [Auth]
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email: { type: string }
+                password: { type: string }
+      responses:
+        200:
+          description: Login successful
+  /auth/refresh:
+    post:
+      summary: Refresh access token
+      tags: [Auth]
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                refreshToken: { type: string }
+      responses:
+        200:
+          description: Tokens refreshed
+  /auth/logout:
+    post:
+      summary: Logout user
+      tags: [Auth]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                refreshToken: { type: string }
+      responses:
+        200:
+          description: Logged out
+  /tasks:
+    get:
+      summary: Get all tasks (User's own or all if Admin)
+      tags: [Tasks]
+      responses:
+        200:
+          description: List of tasks
+    post:
+      summary: Create a task
+      tags: [Tasks]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                title: { type: string }
+                description: { type: string }
+      responses:
+        201:
+          description: Task created
+  /tasks/{id}:
+    get:
+      summary: Get task by ID
+      tags: [Tasks]
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema: { type: string }
+      responses:
+        200:
+          description: Task details
+    put:
+      summary: Update task
+      tags: [Tasks]
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema: { type: string }
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                title: { type: string }
+                description: { type: string }
+                status: { type: string }
+      responses:
+        200:
+          description: updated
+    delete:
+      summary: Soft delete task
+      tags: [Tasks]
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema: { type: string }
+      responses:
+        200:
+          description: Deleted
+  /admin/stats:
+    get:
+      summary: Admin analytics
+      tags: [Admin]
+      responses:
+        200:
+          description: Stats
