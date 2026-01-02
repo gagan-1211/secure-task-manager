@@ -1,5 +1,22 @@
 @import "tailwindcss";
 
+:root {
+  font-family: 'Inter', system-ui, Avenir, Helvetica, Arial, sans-serif;
+}
+
 body {
-  @apply bg-gray-100 text-gray-900;
+  @apply bg-neutral-950 text-white selection:bg-fuchsia-500 selection:text-white;
+}
+
+/* Custom scrollbar for Webkit */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  @apply bg-neutral-900;
+}
+
+::-webkit-scrollbar-thumb {
+  @apply bg-neutral-700 rounded-full hover:bg-neutral-600;
 }
